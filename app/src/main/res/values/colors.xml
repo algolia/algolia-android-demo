@@ -25,4 +25,6 @@ THE SOFTWARE.
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="MovieTitle">@android:color/black</color>
+    <color name="MovieYear">@android:color/darker_gray</color>
 </resources>

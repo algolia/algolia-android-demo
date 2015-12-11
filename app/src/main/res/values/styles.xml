@@ -31,4 +31,14 @@ THE SOFTWARE.
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MovieTitle">
+        <item name="android:textColor">@color/MovieTitle</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="MovieYear">
+        <item name="android:textColor">@color/MovieYear</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

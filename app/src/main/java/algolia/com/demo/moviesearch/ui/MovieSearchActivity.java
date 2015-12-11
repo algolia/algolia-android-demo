@@ -27,15 +27,49 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
 import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.algolia.search.saas.APIClient;
+import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.Index;
+import com.algolia.search.saas.Query;
+import com.algolia.search.saas.listeners.SearchListener;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.List;
 
 import algolia.com.demo.moviesearch.R;
+import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
+import algolia.com.demo.moviesearch.model.HighlightedResult;
+import algolia.com.demo.moviesearch.model.Movie;
 
-public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener
+public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchListener
 {
+    // BL:
+    private APIClient apiClient;
+    private Index index;
+    private Query query;
+    private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
+
+    // UI:
     private SearchView searchView;
+    private ListView moviesListView;
+    private MovieAdapter moviesListAdapter;
+    private ImageLoader imageLoader;
+    private DisplayImageOptions displayImageOptions;
 
     // Lifecycle
 
@@ -44,6 +78,32 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
+
+        // Bind UI components.
+        moviesListView = (ListView) findViewById(R.id.listview_movies);
+        moviesListView.setAdapter(moviesListAdapter = new MovieAdapter(this, R.layout.cell_movie));
+
+        // Init Algolia.
+        apiClient = new APIClient("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
+        index = apiClient.initIndex("movies");
+
+        // Pre-build query.
+        query = new Query();
+        query.setAttributesToRetrieve(Arrays.asList("title", "image", "rating", "year"));
+        query.setAttributesToHighlight(Arrays.asList("title"));
+
+        // Configure Universal Image Loader.
+        displayImageOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                .resetViewBeforeLoading(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+        imageLoader = ImageLoader.getInstance();
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
+            .memoryCacheSize(2 * 1024 * 1024)
+            .memoryCacheSizePercentage(13) // default
+            .build();
+        imageLoader.init(configuration);
     }
 
     @Override
@@ -65,7 +125,39 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
     private void search()
     {
-        Log.d(this.getClass().getName(), String.format("Search: \"%s\"", searchView.getQuery()));
+        query.setQueryString(searchView.getQuery().toString());
+        index.searchASync(query, this);
+    }
+
+    // Data sources
+
+    private class MovieAdapter extends ArrayAdapter<HighlightedResult<Movie>>
+    {
+        public MovieAdapter(Context context, int resource)
+        {
+            super(context, resource);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            ViewGroup cell = (ViewGroup)convertView;
+            if (cell == null) {
+                cell = (ViewGroup) getLayoutInflater().inflate(R.layout.cell_movie, null);
+            }
+
+            ImageView posterImageView = (ImageView) cell.findViewById(R.id.imageview_poster);
+            TextView titleTextView = (TextView) cell.findViewById(R.id.textview_title);
+            TextView yearTextView = (TextView) cell.findViewById(R.id.textview_year);
+
+            HighlightedResult<Movie> result = moviesListAdapter.getItem(position);
+
+            imageLoader.displayImage(result.getResult().getImage(), posterImageView, displayImageOptions);
+            titleTextView.setText(result.getResult().getTitle());
+            yearTextView.setText(String.format("%d", result.getResult().getYear()));
+
+            return cell;
+        }
     }
 
     // SearchView.OnQueryTextListener
@@ -84,5 +176,22 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     {
         search();
         return true;
+    }
+
+    // SearchListener
+
+    @Override
+    public void searchResult(Index index, Query query, JSONObject jsonResult)
+    {
+        List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResult);
+        moviesListAdapter.clear();
+        moviesListAdapter.addAll(results);
+        moviesListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void searchError(Index index, Query query, AlgoliaException e)
+    {
+        // Ignore.
     }
 }
