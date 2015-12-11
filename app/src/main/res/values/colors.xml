@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#2D8BD8</color>
+    <color name="colorPrimaryDark">#1D6BB8</color>
+    <color name="colorAccent">#FFB140</color>
     <color name="MovieTitle">@android:color/black</color>
     <color name="MovieYear">@android:color/darker_gray</color>
 </resources>
