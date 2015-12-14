@@ -76,6 +76,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     private MovieAdapter moviesListAdapter;
     private ImageLoader imageLoader;
     private DisplayImageOptions displayImageOptions;
+    private HighlightRenderer highlightRenderer;
 
     // Constants
 
@@ -119,6 +120,8 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
             .memoryCacheSizePercentage(13) // default
             .build();
         imageLoader.init(configuration);
+
+        highlightRenderer = new HighlightRenderer(this);
     }
 
     @Override
@@ -240,7 +243,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
             HighlightedResult<Movie> result = moviesListAdapter.getItem(position);
 
             imageLoader.displayImage(result.getResult().getImage(), posterImageView, displayImageOptions);
-            titleTextView.setText(result.getResult().getTitle());
+            titleTextView.setText(highlightRenderer.renderHighlights(result.getHighlight("title").getHighlightedValue()));
             yearTextView.setText(String.format("%d", result.getResult().getYear()));
 
             return cell;
