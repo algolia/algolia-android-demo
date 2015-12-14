@@ -31,6 +31,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -56,19 +57,18 @@ import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
 import algolia.com.demo.moviesearch.model.HighlightedResult;
 import algolia.com.demo.moviesearch.model.Movie;
 
-public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener
+public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener
 {
     // BL:
     private APIClient apiClient;
     private Index index;
     private Query query;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
-
-    /** Sequence number of the last issued search query. */
     private int lastSearchedSeqNo;
-
-    /** Sequence number of the last displayed search results. */
     private int lastDisplayedSeqNo;
+    private int lastRequestedPage;
+    private int lastDisplayedPage;
+    private boolean endReached;
 
     // UI:
     private SearchView searchView;
@@ -76,6 +76,13 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     private MovieAdapter moviesListAdapter;
     private ImageLoader imageLoader;
     private DisplayImageOptions displayImageOptions;
+
+    // Constants
+
+    private static final int HITS_PER_PAGE = 20;
+
+    /** Number of items before the end of the list past which we start loading more content. */
+    private static final int LOAD_MORE_THRESHOLD = 5;
 
     // Lifecycle
 
@@ -88,6 +95,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         // Bind UI components.
         moviesListView = (ListView) findViewById(R.id.listview_movies);
         moviesListView.setAdapter(moviesListAdapter = new MovieAdapter(this, R.layout.cell_movie));
+        moviesListView.setOnScrollListener(this);
 
         // Init Algolia.
         apiClient = new APIClient("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
@@ -97,6 +105,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         query = new Query();
         query.setAttributesToRetrieve(Arrays.asList("title", "image", "rating", "year"));
         query.setAttributesToHighlight(Arrays.asList("title"));
+        query.setHitsPerPage(HITS_PER_PAGE);
 
         // Configure Universal Image Loader.
         displayImageOptions = new DisplayImageOptions.Builder()
@@ -133,6 +142,9 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     {
         final int currentSearchSeqNo = ++lastSearchedSeqNo;
         query.setQueryString(searchView.getQuery().toString());
+        lastRequestedPage = 0;
+        lastDisplayedPage = -1;
+        endReached = false;
         index.searchASync(query, new SearchListener()
         {
             @Override
@@ -148,16 +160,58 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
                     return;
 
                 List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResults);
-                moviesListAdapter.clear();
-                moviesListAdapter.addAll(results);
-                moviesListAdapter.notifyDataSetChanged();
-                lastDisplayedSeqNo = currentSearchSeqNo;
+                if (results.isEmpty()) {
+                    endReached = true;
+                }
+                else {
+                    moviesListAdapter.clear();
+                    moviesListAdapter.addAll(results);
+                    moviesListAdapter.notifyDataSetChanged();
+                    lastDisplayedSeqNo = currentSearchSeqNo;
+                    lastDisplayedPage = 0;
+                }
+
+                // Scroll the list back to the top.
+                moviesListView.smoothScrollToPosition(0);
             }
 
             @Override
             public void searchError(Index index, Query query, AlgoliaException e)
             {
                 // Shamelessly ignore the error. :)
+            }
+        });
+    }
+
+    private void loadMore()
+    {
+        Query loadMoreQuery = new Query(query);
+        loadMoreQuery.setPage(++lastRequestedPage);
+        final int currentSearchSeqNo = lastSearchedSeqNo;
+        index.searchASync(loadMoreQuery, new SearchListener()
+        {
+            @Override
+            public void searchResult(Index index, Query query, JSONObject jsonResults)
+            {
+                // Ignore results if they are for an older query.
+                if (lastDisplayedSeqNo != currentSearchSeqNo)
+                    return;
+
+                List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResults);
+                if (results.isEmpty()) {
+                    endReached = true;
+                }
+                else {
+                    moviesListAdapter.addAll(results);
+                    moviesListAdapter.notifyDataSetChanged();
+                    lastDisplayedPage = lastRequestedPage;
+                }
+            }
+
+            @Override
+            public void searchError(Index index, Query query, AlgoliaException e)
+            {
+                // Ignore the error no less shamelessly than above.
             }
         });
     }
@@ -209,5 +263,30 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     {
         search();
         return true;
+    }
+
+    // AbsListView.OnScrollListener
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState)
+    {
+        // Nothing to do.
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+    {
+        // Abort if list is empty or the end has already been reached.
+        if (totalItemCount == 0 || endReached)
+            return;
+
+        // Ignore if a new page has already been requested.
+        if (lastRequestedPage > lastDisplayedPage)
+            return;
+
+        // Load more if we are sufficiently close to the end of the list.
+        int firstInvisibleItem = firstVisibleItem + visibleItemCount;
+        if (firstInvisibleItem + LOAD_MORE_THRESHOLD >= totalItemCount)
+            loadMore();
     }
 }
