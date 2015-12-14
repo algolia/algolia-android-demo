@@ -8,6 +8,8 @@ Algolia is a Search API that provides hosted full-text, numerical and faceted se
 
 - Uses the [AlgoliaSearch Android API client](https://github.com/algolia/algoliasearch-client-android).
 - Displays results as you type.
+- Infinite scrolling.
+- Highlighting of matching words in results. 
 
 
 ## Setup
