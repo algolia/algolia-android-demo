@@ -56,13 +56,19 @@ import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
 import algolia.com.demo.moviesearch.model.HighlightedResult;
 import algolia.com.demo.moviesearch.model.Movie;
 
-public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchListener
+public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener
 {
     // BL:
     private APIClient apiClient;
     private Index index;
     private Query query;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
+
+    /** Sequence number of the last issued search query. */
+    private int lastSearchedSeqNo;
+
+    /** Sequence number of the last displayed search results. */
+    private int lastDisplayedSeqNo;
 
     // UI:
     private SearchView searchView;
@@ -125,8 +131,35 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
     private void search()
     {
+        final int currentSearchSeqNo = ++lastSearchedSeqNo;
         query.setQueryString(searchView.getQuery().toString());
-        index.searchASync(query, this);
+        index.searchASync(query, new SearchListener()
+        {
+            @Override
+            public void searchResult(Index index, Query query, JSONObject jsonResults)
+            {
+                // NOTE: Check that the received results are newer that the last displayed results.
+                //
+                // Rationale: Although TCP imposes a server to send responses in the same order as
+                // requests, nothing prevents the system from opening multiple connections to the
+                // same server, nor the Algolia client to transparently switch to another server
+                // between two requests. Therefore the order of responses is not guaranteed.
+                if (currentSearchSeqNo <= lastDisplayedSeqNo)
+                    return;
+
+                List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResults);
+                moviesListAdapter.clear();
+                moviesListAdapter.addAll(results);
+                moviesListAdapter.notifyDataSetChanged();
+                lastDisplayedSeqNo = currentSearchSeqNo;
+            }
+
+            @Override
+            public void searchError(Index index, Query query, AlgoliaException e)
+            {
+                // Shamelessly ignore the error. :)
+            }
+        });
     }
 
     // Data sources
@@ -176,22 +209,5 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     {
         search();
         return true;
-    }
-
-    // SearchListener
-
-    @Override
-    public void searchResult(Index index, Query query, JSONObject jsonResult)
-    {
-        List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResult);
-        moviesListAdapter.clear();
-        moviesListAdapter.addAll(results);
-        moviesListAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void searchError(Index index, Query query, AlgoliaException e)
-    {
-        // Ignore.
     }
 }
