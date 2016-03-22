@@ -49,6 +49,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.json.JSONObject;
 
+import java.util.Collection;
 import java.util.List;
 
 import algolia.com.demo.moviesearch.R;
@@ -130,7 +131,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
         // Configure search view.
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
@@ -246,6 +247,17 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
             yearTextView.setText(String.format("%d", result.getResult().getYear()));
 
             return cell;
+        }
+
+        @Override
+        public  void addAll(Collection<? extends HighlightedResult<Movie>> items) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                super.addAll(items);
+            } else {
+                for (HighlightedResult<Movie> item : items) {
+                    add(item);
+                }
+            }
         }
     }
 
