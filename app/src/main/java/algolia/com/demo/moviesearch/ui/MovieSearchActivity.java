@@ -39,9 +39,9 @@ import android.widget.TextView;
 
 import com.algolia.search.saas.APIClient;
 import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
-import com.algolia.search.saas.listeners.SearchListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -147,40 +147,34 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         lastRequestedPage = 0;
         lastDisplayedPage = -1;
         endReached = false;
-        index.searchASync(query, new SearchListener()
-        {
+        index.searchASync(query, new CompletionHandler() {
             @Override
-            public void searchResult(Index index, Query query, JSONObject jsonResults)
-            {
-                // NOTE: Check that the received results are newer that the last displayed results.
-                //
-                // Rationale: Although TCP imposes a server to send responses in the same order as
-                // requests, nothing prevents the system from opening multiple connections to the
-                // same server, nor the Algolia client to transparently switch to another server
-                // between two requests. Therefore the order of responses is not guaranteed.
-                if (currentSearchSeqNo <= lastDisplayedSeqNo)
-                    return;
+            public void requestCompleted(JSONObject content, AlgoliaException error) {
+                if (content != null && error == null) {
+                    // NOTE: Check that the received results are newer that the last displayed results.
+                    //
+                    // Rationale: Although TCP imposes a server to send responses in the same order as
+                    // requests, nothing prevents the system from opening multiple connections to the
+                    // same server, nor the Algolia client to transparently switch to another server
+                    // between two requests. Therefore the order of responses is not guaranteed.
+                    if (currentSearchSeqNo <= lastDisplayedSeqNo)
+                        return;
 
-                List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResults);
-                if (results.isEmpty()) {
-                    endReached = true;
+                    List<HighlightedResult<Movie>> results = resultsParser.parseResults(content);
+                    if (results.isEmpty()) {
+                        endReached = true;
+                    }
+                    else {
+                        moviesListAdapter.clear();
+                        moviesListAdapter.addAll(results);
+                        moviesListAdapter.notifyDataSetChanged();
+                        lastDisplayedSeqNo = currentSearchSeqNo;
+                        lastDisplayedPage = 0;
+                    }
+
+                    // Scroll the list back to the top.
+                    moviesListView.smoothScrollToPosition(0);
                 }
-                else {
-                    moviesListAdapter.clear();
-                    moviesListAdapter.addAll(results);
-                    moviesListAdapter.notifyDataSetChanged();
-                    lastDisplayedSeqNo = currentSearchSeqNo;
-                    lastDisplayedPage = 0;
-                }
-
-                // Scroll the list back to the top.
-                moviesListView.smoothScrollToPosition(0);
-            }
-
-            @Override
-            public void searchError(Index index, Query query, AlgoliaException e)
-            {
-                // Shamelessly ignore the error. :)
             }
         });
     }
@@ -190,30 +184,24 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         Query loadMoreQuery = new Query(query);
         loadMoreQuery.setPage(++lastRequestedPage);
         final int currentSearchSeqNo = lastSearchedSeqNo;
-        index.searchASync(loadMoreQuery, new SearchListener()
-        {
+        index.searchASync(loadMoreQuery, new CompletionHandler() {
             @Override
-            public void searchResult(Index index, Query query, JSONObject jsonResults)
-            {
-                // Ignore results if they are for an older query.
-                if (lastDisplayedSeqNo != currentSearchSeqNo)
-                    return;
+            public void requestCompleted(JSONObject content, AlgoliaException error) {
+                if (content != null && error == null) {
+                    // Ignore results if they are for an older query.
+                    if (lastDisplayedSeqNo != currentSearchSeqNo)
+                        return;
 
-                List<HighlightedResult<Movie>> results = resultsParser.parseResults(jsonResults);
-                if (results.isEmpty()) {
-                    endReached = true;
+                    List<HighlightedResult<Movie>> results = resultsParser.parseResults(content);
+                    if (results.isEmpty()) {
+                        endReached = true;
+                    }
+                    else {
+                        moviesListAdapter.addAll(results);
+                        moviesListAdapter.notifyDataSetChanged();
+                        lastDisplayedPage = lastRequestedPage;
+                    }
                 }
-                else {
-                    moviesListAdapter.addAll(results);
-                    moviesListAdapter.notifyDataSetChanged();
-                    lastDisplayedPage = lastRequestedPage;
-                }
-            }
-
-            @Override
-            public void searchError(Index index, Query query, AlgoliaException e)
-            {
-                // Ignore the error no less shamelessly than above.
             }
         });
     }
