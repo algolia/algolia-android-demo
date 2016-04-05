@@ -49,7 +49,6 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 import algolia.com.demo.moviesearch.R;
@@ -104,8 +103,8 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
         // Pre-build query.
         query = new Query();
-        query.setAttributesToRetrieve(Arrays.asList("title", "image", "rating", "year"));
-        query.setAttributesToHighlight(Arrays.asList("title"));
+        query.setAttributesToRetrieve("title", "image", "rating", "year");
+        query.setAttributesToHighlight("title");
         query.setHitsPerPage(HITS_PER_PAGE);
 
         // Configure Universal Image Loader.
@@ -144,7 +143,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     private void search()
     {
         final int currentSearchSeqNo = ++lastSearchedSeqNo;
-        query.setQueryString(searchView.getQuery().toString());
+        query.setQuery(searchView.getQuery().toString());
         lastRequestedPage = 0;
         lastDisplayedPage = -1;
         endReached = false;
