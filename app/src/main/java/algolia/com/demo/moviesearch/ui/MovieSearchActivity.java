@@ -37,7 +37,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.algolia.search.saas.APIClient;
+import com.algolia.search.saas.Client;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
@@ -59,7 +59,7 @@ import algolia.com.demo.moviesearch.model.Movie;
 public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener
 {
     // BL:
-    private APIClient apiClient;
+    private Client client;
     private Index index;
     private Query query;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
@@ -98,8 +98,8 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         moviesListView.setOnScrollListener(this);
 
         // Init Algolia.
-        apiClient = new APIClient("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
-        index = apiClient.initIndex("movies");
+        client = new Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
+        index = client.initIndex("movies");
 
         // Pre-build query.
         query = new Query();
@@ -147,7 +147,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         lastRequestedPage = 0;
         lastDisplayedPage = -1;
         endReached = false;
-        index.searchASync(query, new CompletionHandler() {
+        index.searchAsync(query, new CompletionHandler() {
             @Override
             public void requestCompleted(JSONObject content, AlgoliaException error) {
                 if (content != null && error == null) {
@@ -184,7 +184,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         Query loadMoreQuery = new Query(query);
         loadMoreQuery.setPage(++lastRequestedPage);
         final int currentSearchSeqNo = lastSearchedSeqNo;
-        index.searchASync(loadMoreQuery, new CompletionHandler() {
+        index.searchAsync(loadMoreQuery, new CompletionHandler() {
             @Override
             public void requestCompleted(JSONObject content, AlgoliaException error) {
                 if (content != null && error == null) {
