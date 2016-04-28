@@ -60,8 +60,8 @@ public class AlgoliaManager {
         // Sync part of the index for offline usage.
         moviesIndex.setMirrored(true);
         moviesIndex.setDataSelectionQueries(
-                new MirroredIndex.DataSelectionQuery(new Query().set("filters", "year >= 2000"), 1500),
-                new MirroredIndex.DataSelectionQuery(new Query().set("filters", "year < 2000"), 500)
+                new MirroredIndex.DataSelectionQuery(new Query().set("filters", "year >= 2000"), 500),
+                new MirroredIndex.DataSelectionQuery(new Query().set("filters", "year < 2000"), 100)
         );
     }
 
