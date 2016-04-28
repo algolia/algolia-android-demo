@@ -130,7 +130,19 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
 
+        search();
+
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // WARNING: `onCreateOptionsMenu()` is called *after* `onResume()`--which is insane, but hey! what can we do?
+        if (searchView != null) {
+            search();
+        }
     }
 
     // Actions
