@@ -173,6 +173,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
                         moviesListAdapter.notifyDataSetChanged();
                         lastDisplayedSeqNo = currentSearchSeqNo;
                         lastDisplayedPage = 0;
+                        updateResultsOrigin(content);
                     }
 
                     // Scroll the list back to the top.
@@ -203,10 +204,17 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
                         moviesListAdapter.addAll(results);
                         moviesListAdapter.notifyDataSetChanged();
                         lastDisplayedPage = lastRequestedPage;
+                        updateResultsOrigin(content);
                     }
                 }
             }
         });
+    }
+
+    private void updateResultsOrigin(@NonNull JSONObject content) {
+        String origin = content.optString(MirroredIndex.JSON_KEY_ORIGIN, null);
+        boolean isLocal = origin != null && origin.equals(MirroredIndex.JSON_VALUE_ORIGIN_LOCAL);
+        moviesListView.setBackgroundColor(getResources().getColor(isLocal ? R.color.BackgroundLocal : R.color.BackgroundRemote));
     }
 
     // Data sources

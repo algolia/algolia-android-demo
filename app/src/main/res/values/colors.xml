@@ -27,4 +27,6 @@ THE SOFTWARE.
     <color name="colorAccent">#C0E1FF</color>
     <color name="MovieTitle">@android:color/black</color>
     <color name="MovieYear">@android:color/darker_gray</color>
+    <color name="BackgroundLocal">#FFF8E0</color>
+    <color name="BackgroundRemote">@android:color/white</color>
 </resources>
