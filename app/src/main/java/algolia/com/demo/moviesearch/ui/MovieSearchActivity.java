@@ -27,6 +27,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -40,14 +41,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.algolia.search.saas.AlgoliaException;
-import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
-import com.algolia.search.saas.Index;
+import com.algolia.search.saas.MirroredIndex;
 import com.algolia.search.saas.Query;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.json.JSONObject;
 
@@ -55,15 +53,17 @@ import java.util.Collection;
 import java.util.List;
 
 import algolia.com.demo.moviesearch.R;
+import algolia.com.demo.moviesearch.io.AlgoliaManager;
+import algolia.com.demo.moviesearch.io.ImageLoaderManager;
 import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
+import algolia.com.demo.moviesearch.logic.AlgoliaSyncService;
 import algolia.com.demo.moviesearch.model.HighlightedResult;
 import algolia.com.demo.moviesearch.model.Movie;
 
 public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener
 {
     // BL:
-    private Client client;
-    private Index index;
+    private MirroredIndex index;
     private Query query;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
     private int lastSearchedSeqNo;
@@ -95,14 +95,16 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
 
+        // Init Algolia.
+        index = AlgoliaManager.getInstance(this).getMoviesIndex();
+
+        // Launch a sync if needed.
+        AlgoliaSyncService.syncIfNeededAndPossible(this);
+
         // Bind UI components.
         moviesListView = (ListView) findViewById(R.id.listview_movies);
         moviesListView.setAdapter(moviesListAdapter = new MovieAdapter(this, R.layout.cell_movie));
         moviesListView.setOnScrollListener(this);
-
-        // Init Algolia.
-        client = new Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
-        index = client.initIndex("movies");
 
         // Pre-build query.
         query = new Query();
@@ -111,18 +113,8 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         query.setHitsPerPage(HITS_PER_PAGE);
 
         // Configure Universal Image Loader.
-        displayImageOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisk(true)
-                .resetViewBeforeLoading(true)
-                .displayer(new FadeInBitmapDisplayer(300))
-                .build();
-        imageLoader = ImageLoader.getInstance();
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
-            .memoryCacheSize(2 * 1024 * 1024)
-            .memoryCacheSizePercentage(13) // default
-            .build();
-        imageLoader.init(configuration);
-
+        imageLoader = ImageLoaderManager.getInstance(this).getImageLoader();
+        displayImageOptions = ImageLoaderManager.getInstance(this).getDisplayImageOptions();
         highlightRenderer = new HighlightRenderer(this);
     }
 

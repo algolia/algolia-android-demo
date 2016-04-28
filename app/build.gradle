@@ -16,12 +16,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        all {
+            resValue "string", "ALGOLIA_API_KEY", "d0a23086ed4be550f70be98c0acf7d74"
+            // NOTE: You need to define the `algolia.offlinesdk.licensekey` property somewhere accessible by Gradle
+            // (most likely in `~/.gradle/gradle.properties`).
+            resValue "string", "ALGOLIA_OFFLINE_SDK_LICENSE_KEY", project.property("algolia.offlinesdk.licensekey")
+        }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.algolia:algoliasearch-android:3.0@aar'
+    compile 'com.algolia:algoliasearch-offline-android:3.1-SNAPSHOT@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
