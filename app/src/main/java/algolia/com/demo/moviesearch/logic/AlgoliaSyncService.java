@@ -100,7 +100,6 @@ public class AlgoliaSyncService extends Service implements SyncListener {
         if (intent != null) {
             switch (intent.getAction()) {
                 case ACTION_SYNC_IF_NEEDED: {
-                    Toast.makeText(this, "Syncing if needed", Toast.LENGTH_LONG).show();
                     index.syncIfNeeded();
                     break;
                 }
@@ -118,9 +117,9 @@ public class AlgoliaSyncService extends Service implements SyncListener {
     private void syncDidFinish(Throwable error) {
         if (error != null) {
             Log.e(this.getClass().getName(), "Sync failed on " + index, error);
-            Toast.makeText(this, "Sync failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Sync failed", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Sync succeeded", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Sync succeeded", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -224,12 +223,14 @@ public class AlgoliaSyncService extends Service implements SyncListener {
     @Override
     public void syncDidStart(MirroredIndex index) {
         Log.d(this.getClass().getName(), "Sync started on " + index);
+        Toast.makeText(this, "Sync started", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void syncDidFinish(MirroredIndex index, Throwable error, MirroredIndex.SyncStats stats) {
         if (error == null) {
             Log.d(this.getClass().getName(), "Sync succeeded on " + index + "; stats: " + stats);
+            Toast.makeText(this, "Data sync finished; syncing images now...", Toast.LENGTH_SHORT).show();
             preloadImages();
         } else {
             syncDidFinish(error);
