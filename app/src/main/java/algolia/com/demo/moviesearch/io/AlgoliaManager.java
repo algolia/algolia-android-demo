@@ -52,7 +52,7 @@ public class AlgoliaManager {
 
     private AlgoliaManager(@NonNull Context context) {
         this.context = context.getApplicationContext();
-        File dataDir = new File(this.context.getCacheDir(), "algolia");
+        File dataDir = new File(this.context.getFilesDir(), "algolia");
         client = new OfflineClient("latency", context.getResources().getString(R.string.ALGOLIA_API_KEY), dataDir);
         client.enableOfflineMode(context.getResources().getString(R.string.ALGOLIA_OFFLINE_SDK_LICENSE_KEY));
         moviesIndex = client.initIndex("movies");
