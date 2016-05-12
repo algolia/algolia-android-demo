@@ -66,6 +66,7 @@ public class AlgoliaSyncService extends Service implements SyncListener {
     private int imagesLoading;
 
     public static final String ACTION_SYNC_IF_NEEDED = "algolia.sync.ifneeded";
+    public static final String ACTION_SYNC_ALWAYS = "algolia.sync.always";
 
     // ----------------------------------------------------------------------
     // Lifecycle
@@ -104,9 +105,17 @@ public class AlgoliaSyncService extends Service implements SyncListener {
                     index.syncIfNeeded();
                     break;
                 }
+                case ACTION_SYNC_ALWAYS: {
+                    index.sync();
+                    break;
+                }
             }
         }
         return Service.START_NOT_STICKY;
+    }
+
+    public static void sync(@NonNull Context context) {
+        context.startService(new Intent(AlgoliaSyncService.ACTION_SYNC_ALWAYS, null, context, AlgoliaSyncService.class));
     }
 
     public static void syncIfNeededAndPossible(@NonNull Context context) {
