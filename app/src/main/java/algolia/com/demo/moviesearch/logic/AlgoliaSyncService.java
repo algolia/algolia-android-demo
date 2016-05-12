@@ -60,6 +60,7 @@ import algolia.com.demo.moviesearch.model.Movie;
 
 public class AlgoliaSyncService extends Service implements SyncListener {
     private MirroredIndex index;
+    private boolean shouldSyncImages = false;
     private ImageLoader imageLoader;
     private Queue<String> imagesToLoad = new ArrayDeque<>();
     private int imagesLoading;
@@ -228,7 +229,7 @@ public class AlgoliaSyncService extends Service implements SyncListener {
 
     @Override
     public void syncDidFinish(MirroredIndex index, Throwable error, MirroredIndex.SyncStats stats) {
-        if (error == null) {
+        if (error == null && shouldSyncImages) {
             Log.d(this.getClass().getName(), "Sync succeeded on " + index + "; stats: " + stats);
             Toast.makeText(this, "Data sync finished; syncing images now...", Toast.LENGTH_SHORT).show();
             preloadImages();
