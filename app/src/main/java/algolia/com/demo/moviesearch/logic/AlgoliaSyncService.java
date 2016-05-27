@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import algolia.com.demo.moviesearch.BuildConfig;
 import algolia.com.demo.moviesearch.io.AlgoliaManager;
@@ -87,7 +88,7 @@ public class AlgoliaSyncService extends Service implements SyncListener {
 
         // Shorten the delay between syncs in debug configuration.
         if (BuildConfig.DEBUG) {
-            index.setDelayBetweenSyncs(1000 * 10 /* 10 seconds */);
+            index.setDelayBetweenSyncs(30, TimeUnit.MINUTES);
         }
     }
 
