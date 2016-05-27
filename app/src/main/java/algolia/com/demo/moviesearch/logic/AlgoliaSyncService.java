@@ -61,7 +61,7 @@ import algolia.com.demo.moviesearch.model.Movie;
 
 public class AlgoliaSyncService extends Service implements SyncListener {
     private MirroredIndex index;
-    private boolean shouldSyncImages = false;
+    private boolean shouldSyncImages = true;
     private ImageLoader imageLoader;
     private Queue<String> imagesToLoad = new ArrayDeque<>();
     private int imagesLoading;
