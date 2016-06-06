@@ -116,12 +116,17 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
                 .resetViewBeforeLoading(true)
                 .displayer(new FadeInBitmapDisplayer(300))
                 .build();
-        imageLoader = ImageLoader.getInstance();
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
-            .memoryCacheSize(2 * 1024 * 1024)
-            .memoryCacheSizePercentage(13) // default
-            .build();
-        imageLoader.init(configuration);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                imageLoader = ImageLoader.getInstance();
+                ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(MovieSearchActivity.this)
+                        .memoryCacheSize(2 * 1024 * 1024)
+                        .memoryCacheSizePercentage(13) // default
+                        .build();
+                imageLoader.init(configuration);
+            }
+        }).start();
 
         highlightRenderer = new HighlightRenderer(this);
     }
