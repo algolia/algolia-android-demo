@@ -28,7 +28,7 @@ THE SOFTWARE.
     android:layout_height="match_parent"
     tools:context=".ui.MovieSearchActivity"
     >
-    <ListView
+    <algolia.com.demo.moviesearch.ui.ResultsListView
         android:id="@+id/listview_movies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
