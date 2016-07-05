@@ -36,8 +36,7 @@ import algolia.com.demo.moviesearch.model.Movie;
 /**
  * Parses the JSON output of a search query.
  */
-public class SearchResultsJsonParser
-{
+public class SearchResultsJsonParser {
     private MovieJsonParser movieParser = new MovieJsonParser();
 
     /**
@@ -46,34 +45,29 @@ public class SearchResultsJsonParser
      * @param jsonObject The result's root object.
      * @return A list of results (potentially empty), or null in case of error.
      */
-    public List<HighlightedResult<Movie>> parseResults(JSONObject jsonObject)
-    {
-        if (jsonObject == null)
-            return null;
+    public List<HighlightedResult<Movie>> parseResults(JSONObject jsonObject) {
+        if (jsonObject == null) return null;
 
         List<HighlightedResult<Movie>> results = new ArrayList<>();
         JSONArray hits = jsonObject.optJSONArray("hits");
-        if (hits == null)
-            return null;
+        if (hits == null) return null;
 
         for (int i = 0; i < hits.length(); ++i) {
             JSONObject hit = hits.optJSONObject(i);
-            if (hit == null)
-                continue;
+            if (hit == null) continue;
 
             Movie movie = movieParser.parse(hit);
-            if (movie == null)
-                continue;
+            if (movie == null) continue;
 
             JSONObject highlightResult = hit.optJSONObject("_highlightResult");
-            if (highlightResult == null)
-                continue;
+            if (highlightResult == null) continue;
+
             JSONObject highlightTitle = highlightResult.optJSONObject("title");
-            if (highlightTitle == null)
-                continue;
+            if (highlightTitle == null) continue;
+
             String value = highlightTitle.optString("value");
-            if (value == null)
-                continue;
+            if (value == null) continue;
+
             HighlightedResult<Movie> result = new HighlightedResult<>(movie);
             result.addHighlight("title", new Highlight("title", value));
             results.add(result);

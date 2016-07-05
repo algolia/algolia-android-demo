@@ -30,18 +30,17 @@ import algolia.com.demo.moviesearch.model.Movie;
 /**
  * Parses `Movie` instances from their JSON representation.
  */
-public class MovieJsonParser
-{
+public class MovieJsonParser {
     /**
      * Parse a single movie record.
      *
      * @param jsonObject JSON object.
      * @return Parsed movie, or null if error.
      */
-    public Movie parse(JSONObject jsonObject)
-    {
-        if (jsonObject == null)
+    public Movie parse(JSONObject jsonObject) {
+        if (jsonObject == null) {
             return null;
+        }
 
         String title = jsonObject.optString("title");
         String image = jsonObject.optString("image");

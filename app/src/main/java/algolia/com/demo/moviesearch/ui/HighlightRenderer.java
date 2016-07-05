@@ -37,21 +37,18 @@ import algolia.com.demo.moviesearch.R;
 /**
  * Renders HTML-like attributed strings into `Spannable` instances suitable for display.
  */
-public class HighlightRenderer
-{
+public class HighlightRenderer {
     private Context context;
 
     // NOTE: This pattern is not bullet-proof (most notably against nested tags), but it is
     // sufficient for our purposes.
     static final Pattern HIGHLIGHT_PATTERN = Pattern.compile("<em>([^<]*)</em>");
 
-    public HighlightRenderer(Context context)
-    {
+    public HighlightRenderer(Context context) {
         this.context = context;
     }
 
-    public Spannable renderHighlights(String markupString)
-    {
+    public Spannable renderHighlights(String markupString) {
         SpannableStringBuilder result = new SpannableStringBuilder();
         Matcher matcher = HIGHLIGHT_PATTERN.matcher(markupString);
         int p = 0; // current position in input string

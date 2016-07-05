@@ -49,14 +49,12 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     private SearchHelper helper;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
 
         // Bind UI components.
-        moviesListView = (ResultsListView) findViewById(R.id.listview_movies);
-        moviesListView.setOnScrollListener(this);
+        (moviesListView = (ResultsListView) findViewById(R.id.listview_movies)).setOnScrollListener(this);
 
         // Init Algolia.
         helper = new SearchHelper(moviesListView, "latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb", "movies");
@@ -68,8 +66,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_search, menu);
 
         // Configure search view.
@@ -85,8 +82,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     // SearchView.OnQueryTextListener
 
     @Override
-    public boolean onQueryTextSubmit(String query)
-    {
+    public boolean onQueryTextSubmit(String query) {
         // Nothing to do: the search has already been performed by `onQueryTextChange()`.
         // We do try to close the keyboard, though.
         searchView.clearFocus();
@@ -94,28 +90,27 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     }
 
     @Override
-    public boolean onQueryTextChange(String newText)
-    {
+    public boolean onQueryTextChange(String newText) {
         helper.search(searchView.getQuery().toString());
         return true;
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState)
-    {
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
         // Nothing to do.
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-    {
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         // Abort if list is empty or the end has already been reached.
-        if (totalItemCount == 0 || !helper.shouldLoadMore())
+        if (totalItemCount == 0 || !helper.shouldLoadMore()) {
             return;
+        }
 
         // Load more if we are sufficiently close to the end of the list.
         int firstInvisibleItem = firstVisibleItem + visibleItemCount;
-        if (firstInvisibleItem + LOAD_MORE_THRESHOLD >= totalItemCount)
+        if (firstInvisibleItem + LOAD_MORE_THRESHOLD >= totalItemCount) {
             helper.loadMore();
+        }
     }
 }
