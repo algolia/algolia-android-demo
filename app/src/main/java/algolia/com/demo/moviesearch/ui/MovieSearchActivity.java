@@ -23,10 +23,7 @@
 
 package algolia.com.demo.moviesearch.ui;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -37,7 +34,7 @@ import com.algolia.search.saas.Query;
 
 import algolia.com.demo.moviesearch.R;
 
-public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener {
+public class MovieSearchActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
     // UI:
     private SearchView searchView;
     private ResultsListView moviesListView;
@@ -70,30 +67,11 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         getMenuInflater().inflate(R.menu.menu_movie_search, menu);
 
         // Configure search view.
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(this);
-
+        helper.registerSearchView(this, menu, R.id.search);
         return true;
     }
 
-    // SearchView.OnQueryTextListener
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        // Nothing to do: the search has already been performed by `onQueryTextChange()`.
-        // We do try to close the keyboard, though.
-        searchView.clearFocus();
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        helper.search(searchView.getQuery().toString());
-        return true;
-    }
+    // AbsListView.OnScrollListener
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
