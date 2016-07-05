@@ -30,25 +30,23 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.widget.AbsListView;
 
 import com.algolia.instantsearch.SearchHelper;
 import com.algolia.search.saas.Query;
 
 import algolia.com.demo.moviesearch.R;
 
-public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener
-{
+public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener {
     // UI:
     private SearchView searchView;
+    private ResultsListView moviesListView;
 
     // Constants
-
+    private static final int LOAD_MORE_THRESHOLD = 5;
     private static final int HITS_PER_PAGE = 20;
 
     private SearchHelper helper;
-    private ResultsListView moviesListView;
-
-    // Lifecycle
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,6 +56,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
         // Bind UI components.
         moviesListView = (ResultsListView) findViewById(R.id.listview_movies);
+        moviesListView.setOnScrollListener(this);
 
         // Init Algolia.
         helper = new SearchHelper(moviesListView, "latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb", "movies");
@@ -99,5 +98,24 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     {
         helper.search(searchView.getQuery().toString());
         return true;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState)
+    {
+        // Nothing to do.
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+    {
+        // Abort if list is empty or the end has already been reached.
+        if (totalItemCount == 0 || !helper.shouldLoadMore())
+            return;
+
+        // Load more if we are sufficiently close to the end of the list.
+        int firstInvisibleItem = firstVisibleItem + visibleItemCount;
+        if (firstInvisibleItem + LOAD_MORE_THRESHOLD >= totalItemCount)
+            helper.loadMore();
     }
 }
