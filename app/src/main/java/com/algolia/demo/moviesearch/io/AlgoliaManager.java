@@ -60,6 +60,8 @@ public class AlgoliaManager {
                 new MirroredIndex.DataSelectionQuery(new Query().set("filters", "year >= 2000"), 500),
                 new MirroredIndex.DataSelectionQuery(new Query().set("filters", "year < 2000"), 100)
         );
+        moviesIndex.setRequestStrategy(MirroredIndex.Strategy.FALLBACK_ON_TIMEOUT);
+        moviesIndex.setOfflineFallbackTimeout(500);
     }
 
     /**
