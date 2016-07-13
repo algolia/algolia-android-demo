@@ -31,8 +31,6 @@ import com.algolia.search.saas.MirroredIndex;
 import com.algolia.search.saas.OfflineClient;
 import com.algolia.search.saas.Query;
 
-import java.io.File;
-
 import com.algolia.demo.moviesearch.R;
 
 /**
@@ -52,8 +50,7 @@ public class AlgoliaManager {
 
     private AlgoliaManager(@NonNull Context context) {
         this.context = context.getApplicationContext();
-        File dataDir = new File(this.context.getFilesDir(), "algolia");
-        client = new OfflineClient("latency", context.getResources().getString(R.string.ALGOLIA_API_KEY), dataDir);
+        client = new OfflineClient(context, "latency", context.getResources().getString(R.string.ALGOLIA_API_KEY));
         client.enableOfflineMode(context.getResources().getString(R.string.ALGOLIA_OFFLINE_SDK_LICENSE_KEY));
         moviesIndex = client.initIndex("movies");
 
