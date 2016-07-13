@@ -168,7 +168,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
                         return;
 
                     List<HighlightedResult<Movie>> results = resultsParser.parseResults(content);
-                    if (results.isEmpty()) {
+                    if (results == null || results.isEmpty()) {
                         endReached = true;
                     }
                     else {
