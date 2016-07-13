@@ -21,35 +21,29 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.io;
-
-import org.json.JSONObject;
-
-import algolia.com.demo.moviesearch.model.Movie;
+package com.algolia.demo.moviesearch.model;
 
 /**
- * Parses `Movie` instances from their JSON representation.
+ * The highlighted value of an attribute.
  */
-public class MovieJsonParser
+public class Highlight
 {
-    /**
-     * Parse a single movie record.
-     *
-     * @param jsonObject JSON object.
-     * @return Parsed movie, or null if error.
-     */
-    public Movie parse(JSONObject jsonObject)
-    {
-        if (jsonObject == null)
-            return null;
+    private String attributeName;
+    private String highlightedValue;
 
-        String title = jsonObject.optString("title");
-        String image = jsonObject.optString("image");
-        int rating = jsonObject.optInt("rating", -1);
-        int year = jsonObject.optInt("year", 0);
-        if (title != null && image != null && rating >= 0 && year != 0) {
-            return new Movie(title, image, rating, year);
-        }
-        return null;
+    public Highlight(String attributeName, String highlightedValue)
+    {
+        this.attributeName = attributeName;
+        this.highlightedValue = highlightedValue;
+    }
+
+    public String getAttributeName()
+    {
+        return attributeName;
+    }
+
+    public String getHighlightedValue()
+    {
+        return highlightedValue;
     }
 }

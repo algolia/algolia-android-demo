@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016 Algolia
+ * Copyright (c) 2015 Algolia
  * http://www.algolia.com/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,27 +21,35 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.logic;
+package com.algolia.demo.moviesearch.io;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.widget.Toast;
+import org.json.JSONObject;
+
+import com.algolia.demo.moviesearch.model.Movie;
 
 /**
- * Listens for connectivity events.
+ * Parses `Movie` instances from their JSON representation.
  */
-public class ConnectivityReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        AlgoliaSyncService.syncIfNeededAndPossible(context);
-    }
+public class MovieJsonParser
+{
+    /**
+     * Parse a single movie record.
+     *
+     * @param jsonObject JSON object.
+     * @return Parsed movie, or null if error.
+     */
+    public Movie parse(JSONObject jsonObject)
+    {
+        if (jsonObject == null)
+            return null;
 
-    public static boolean isNetworkOkForSync(Context context) {
-        Toast.makeText(context, "Connectivity changed", Toast.LENGTH_LONG).show();
-        NetworkInfo activeNetwork = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-        return activeNetwork != null && (activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET || activeNetwork.getType() == ConnectivityManager.TYPE_WIFI);
+        String title = jsonObject.optString("title");
+        String image = jsonObject.optString("image");
+        int rating = jsonObject.optInt("rating", -1);
+        int year = jsonObject.optInt("year", 0);
+        if (title != null && image != null && rating >= 0 && year != 0) {
+            return new Movie(title, image, rating, year);
+        }
+        return null;
     }
 }

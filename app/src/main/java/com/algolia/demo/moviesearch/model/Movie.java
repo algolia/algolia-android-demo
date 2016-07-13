@@ -21,39 +21,43 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.model;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.algolia.demo.moviesearch.model;
 
 /**
- * An highlighted results holds a data model object along with any number of highlights for this
- * object's attributes.
- *
- * @param <T> The data model type.
+ * A movie object from the data model.
  */
-public class HighlightedResult<T>
+public class Movie
 {
-    private T result;
-    private Map<String, Highlight> highlights = new HashMap<>();
+    private String title;
+    private String image;
+    private int rating;
+    private int year;
 
-    public HighlightedResult(T result)
+    public Movie(String title, String image, int rating, int year)
     {
-        this.result = result;
+        this.title = title;
+        this.image = image;
+        this.rating = rating;
+        this.year = year;
     }
 
-    public T getResult()
+    public String getTitle()
     {
-        return result;
+        return title;
     }
 
-    public Highlight getHighlight(String attributeName)
+    public String getImage()
     {
-        return highlights.get(attributeName);
+        return image;
     }
 
-    public void addHighlight(String attributeName, Highlight highlight)
+    public int getRating()
     {
-        highlights.put(attributeName, highlight);
+        return rating;
+    }
+
+    public int getYear()
+    {
+        return year;
     }
 }

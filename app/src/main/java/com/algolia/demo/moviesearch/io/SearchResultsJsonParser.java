@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.io;
+package com.algolia.demo.moviesearch.io;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,9 +29,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import algolia.com.demo.moviesearch.model.Highlight;
-import algolia.com.demo.moviesearch.model.HighlightedResult;
-import algolia.com.demo.moviesearch.model.Movie;
+import com.algolia.demo.moviesearch.model.Highlight;
+import com.algolia.demo.moviesearch.model.HighlightedResult;
+import com.algolia.demo.moviesearch.model.Movie;
 
 /**
  * Parses the JSON output of a search query.

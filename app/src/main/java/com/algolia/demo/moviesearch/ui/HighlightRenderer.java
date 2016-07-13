@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.ui;
+package com.algolia.demo.moviesearch.ui;
 
 import android.content.Context;
 import android.text.Spannable;
@@ -32,7 +32,7 @@ import android.text.style.BackgroundColorSpan;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import algolia.com.demo.moviesearch.R;
+import com.algolia.demo.moviesearch.R;
 
 /**
  * Renders HTML-like attributed strings into `Spannable` instances suitable for display.

@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.ui;
+package com.algolia.demo.moviesearch.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -52,13 +52,13 @@ import org.json.JSONObject;
 import java.util.Collection;
 import java.util.List;
 
-import algolia.com.demo.moviesearch.R;
-import algolia.com.demo.moviesearch.io.AlgoliaManager;
-import algolia.com.demo.moviesearch.io.ImageLoaderManager;
-import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
-import algolia.com.demo.moviesearch.logic.AlgoliaSyncService;
-import algolia.com.demo.moviesearch.model.HighlightedResult;
-import algolia.com.demo.moviesearch.model.Movie;
+import com.algolia.demo.moviesearch.R;
+import com.algolia.demo.moviesearch.io.AlgoliaManager;
+import com.algolia.demo.moviesearch.io.ImageLoaderManager;
+import com.algolia.demo.moviesearch.io.SearchResultsJsonParser;
+import com.algolia.demo.moviesearch.logic.AlgoliaSyncService;
+import com.algolia.demo.moviesearch.model.HighlightedResult;
+import com.algolia.demo.moviesearch.model.Movie;
 
 public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener
 {

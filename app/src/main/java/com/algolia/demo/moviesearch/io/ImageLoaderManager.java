@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.io;
+package com.algolia.demo.moviesearch.io;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

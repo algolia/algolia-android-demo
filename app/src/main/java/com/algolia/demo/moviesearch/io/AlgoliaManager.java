@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.io;
+package com.algolia.demo.moviesearch.io;
 
 
 import android.content.Context;
@@ -33,7 +33,7 @@ import com.algolia.search.saas.Query;
 
 import java.io.File;
 
-import algolia.com.demo.moviesearch.R;
+import com.algolia.demo.moviesearch.R;
 
 /**
  * Manages Algolia indices (singleton).

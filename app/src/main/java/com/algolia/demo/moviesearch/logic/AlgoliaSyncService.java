@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.logic;
+package com.algolia.demo.moviesearch.logic;
 
 import android.app.Service;
 import android.content.Context;
@@ -53,11 +53,11 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import algolia.com.demo.moviesearch.BuildConfig;
-import algolia.com.demo.moviesearch.io.AlgoliaManager;
-import algolia.com.demo.moviesearch.io.ImageLoaderManager;
-import algolia.com.demo.moviesearch.io.MovieJsonParser;
-import algolia.com.demo.moviesearch.model.Movie;
+import com.algolia.demo.moviesearch.BuildConfig;
+import com.algolia.demo.moviesearch.io.AlgoliaManager;
+import com.algolia.demo.moviesearch.io.ImageLoaderManager;
+import com.algolia.demo.moviesearch.io.MovieJsonParser;
+import com.algolia.demo.moviesearch.model.Movie;
 
 public class AlgoliaSyncService extends Service implements SyncListener {
     private MirroredIndex index;

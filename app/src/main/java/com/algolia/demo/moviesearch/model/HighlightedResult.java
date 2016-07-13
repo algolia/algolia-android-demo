@@ -21,29 +21,39 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.model;
+package com.algolia.demo.moviesearch.model;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The highlighted value of an attribute.
+ * An highlighted results holds a data model object along with any number of highlights for this
+ * object's attributes.
+ *
+ * @param <T> The data model type.
  */
-public class Highlight
+public class HighlightedResult<T>
 {
-    private String attributeName;
-    private String highlightedValue;
+    private T result;
+    private Map<String, Highlight> highlights = new HashMap<>();
 
-    public Highlight(String attributeName, String highlightedValue)
+    public HighlightedResult(T result)
     {
-        this.attributeName = attributeName;
-        this.highlightedValue = highlightedValue;
+        this.result = result;
     }
 
-    public String getAttributeName()
+    public T getResult()
     {
-        return attributeName;
+        return result;
     }
 
-    public String getHighlightedValue()
+    public Highlight getHighlight(String attributeName)
     {
-        return highlightedValue;
+        return highlights.get(attributeName);
+    }
+
+    public void addHighlight(String attributeName, Highlight highlight)
+    {
+        highlights.put(attributeName, highlight);
     }
 }
