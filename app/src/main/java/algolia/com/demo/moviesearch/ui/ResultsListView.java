@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-import com.algolia.instantsearch.SearchHelper;
-import com.algolia.instantsearch.views.AlgoliaResultsView;
+import com.algolia.instantsearch.Searcher;
+import com.algolia.instantsearch.views.AlgoliaResultsListener;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Query;
 

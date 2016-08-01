@@ -2,7 +2,6 @@ package algolia.com.demo.moviesearch.ui;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,6 @@ class MovieAdapter extends ArrayAdapter<HighlightedResult<Movie>> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.e("PLN", "getView(" + position + "," + convertView + "," + parent);
         View cell = convertView;
         if (cell == null) {
             cell = LayoutInflater.from(context).inflate(R.layout.cell_movie, parent, false);
