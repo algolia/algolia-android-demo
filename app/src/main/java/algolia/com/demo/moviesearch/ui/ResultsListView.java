@@ -20,7 +20,7 @@ import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
 import algolia.com.demo.moviesearch.model.HighlightedResult;
 import algolia.com.demo.moviesearch.model.Movie;
 
-public class ResultsListView extends ListView implements AlgoliaResultsView {
+public class ResultsListView extends ListView implements AlgoliaResultsListener {
     private final MovieAdapter adapter;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
 
@@ -29,7 +29,7 @@ public class ResultsListView extends ListView implements AlgoliaResultsView {
         setAdapter(adapter = new MovieAdapter(context, R.layout.cell_movie));
     }
 
-    @Override public void onInit(@NonNull SearchHelper helper) {
+    @Override public void onInit(@NonNull Searcher helper) {
     }
 
     @Override public void onUpdateView(@Nullable JSONObject hits, boolean isLoadingMore) {
@@ -46,5 +46,8 @@ public class ResultsListView extends ListView implements AlgoliaResultsView {
     }
 
     @Override public void onError(Query query, AlgoliaException error) {
+    }
+
+    @Override public void onReset() {
     }
 }
