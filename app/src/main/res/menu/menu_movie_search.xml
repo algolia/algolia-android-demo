@@ -31,6 +31,6 @@ THE SOFTWARE.
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"
         app:iconifiedByDefault="false"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="android.widget.SearchView"
         />
 </menu>
