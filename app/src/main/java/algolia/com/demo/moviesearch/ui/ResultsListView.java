@@ -2,16 +2,14 @@ package algolia.com.demo.moviesearch.ui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
 import com.algolia.instantsearch.Searcher;
-import com.algolia.instantsearch.views.AlgoliaResultsListener;
+import com.algolia.instantsearch.model.SearchResults;
+import com.algolia.instantsearch.views.AlgoliaWidget;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Query;
-
-import org.json.JSONObject;
 
 import java.util.List;
 

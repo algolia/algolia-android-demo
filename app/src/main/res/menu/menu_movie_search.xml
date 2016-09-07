@@ -21,26 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<!--<menu-->
-<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--&gt;-->
-<!--<item-->
-<!--android:id="@+id/search"-->
-<!--android:title="@string/search_title"-->
-<!--android:icon="@android:drawable/ic_menu_search"-->
-<!--app:showAsAction="always"-->
-<!--app:iconifiedByDefault="false"-->
-<!--app:actionViewClass="android.support.v7.widget.SearchView"-->
-<!--/>-->
-<!--</menu>-->
-
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/menu_item_search"
-        android:actionViewClass="android.widget.SearchView"
+        android:id="@+id/search"
         android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/search_title">
-    </item>
+        android:title="@string/search_title"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:iconifiedByDefault="true"
+        app:showAsAction="always"
+        />
 </menu>

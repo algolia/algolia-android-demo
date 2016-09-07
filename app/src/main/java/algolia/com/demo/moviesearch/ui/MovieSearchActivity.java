@@ -65,12 +65,10 @@ public class MovieSearchActivity extends AppCompatActivity implements AbsListVie
                 .setHitsPerPage(HITS_PER_PAGE));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_search, menu);
-
         // Configure search view.
-        helper.registerSearchView(this, menu, R.id.menu_item_search);
+        helper.registerSearchView(this, menu, R.id.search);
         return true;
     }
 
