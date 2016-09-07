@@ -56,11 +56,11 @@ public class MovieSearchActivity extends AppCompatActivity implements AbsListVie
 
         // Init Algolia.
         Client client = new Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
-        searcher = new Searcher(client, client.initIndex("movies"));
+        searcher = new Searcher(client.initIndex("movies"));
         helper = new InstantSearchHelper(moviesListView, searcher);
 
         // Pre-build query.
-        searcher.setBaseQuery(new Query().setAttributesToRetrieve("title", "image", "rating", "year")
+        searcher.setQuery(new Query().setAttributesToRetrieve("title", "image", "rating", "year")
                 .setAttributesToHighlight("title")
                 .setHitsPerPage(HITS_PER_PAGE));
     }
@@ -70,7 +70,7 @@ public class MovieSearchActivity extends AppCompatActivity implements AbsListVie
         getMenuInflater().inflate(R.menu.menu_movie_search, menu);
 
         // Configure search view.
-        helper.registerSearchView(this, menu, R.id.search);
+        helper.registerSearchView(this, menu, R.id.menu_item_search);
         return true;
     }
 

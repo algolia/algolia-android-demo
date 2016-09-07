@@ -20,7 +20,7 @@ import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
 import algolia.com.demo.moviesearch.model.HighlightedResult;
 import algolia.com.demo.moviesearch.model.Movie;
 
-public class ResultsListView extends ListView implements AlgoliaResultsListener {
+public class ResultsListView extends ListView implements AlgoliaWidget {
     private final MovieAdapter adapter;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
 
@@ -29,19 +29,19 @@ public class ResultsListView extends ListView implements AlgoliaResultsListener 
         setAdapter(adapter = new MovieAdapter(context, R.layout.cell_movie));
     }
 
-    @Override public void onInit(@NonNull Searcher helper) {
+    @Override public void setSearcher(@NonNull Searcher searcher) {
     }
 
-    @Override public void onUpdateView(@Nullable JSONObject hits, boolean isLoadingMore) {
+    @Override public void onResults(SearchResults results, boolean isLoadingMore) {
         if (!isLoadingMore) {
-            List<HighlightedResult<Movie>> results = resultsParser.parseResults(hits);
+            List<HighlightedResult<Movie>> resultList = resultsParser.parseResults(results.content);
             adapter.clear();
-            adapter.addAll(results);
+            adapter.addAll(resultList);
             // Scroll the list back to the top.
             smoothScrollToPosition(0);
         } else {
-            List<HighlightedResult<Movie>> results = resultsParser.parseResults(hits);
-            adapter.addAll(results);
+            List<HighlightedResult<Movie>> resultList = resultsParser.parseResults(results.content);
+            adapter.addAll(resultList);
         }
     }
 
