@@ -62,6 +62,9 @@ public class AlgoliaManager {
         );
         moviesIndex.setRequestStrategy(MirroredIndex.Strategy.FALLBACK_ON_TIMEOUT);
         moviesIndex.setOfflineFallbackTimeout(500);
+
+        // Bootstrap the `movies` index from the resources.
+        moviesIndex.bootstrapFromRawResources(context.getResources(), R.raw.settings, R.raw.objects);
     }
 
     /**
