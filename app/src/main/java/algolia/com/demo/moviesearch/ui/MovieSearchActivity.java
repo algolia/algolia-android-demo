@@ -59,8 +59,7 @@ import algolia.com.demo.moviesearch.io.SearchResultsJsonParser;
 import algolia.com.demo.moviesearch.model.HighlightedResult;
 import algolia.com.demo.moviesearch.model.Movie;
 
-public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener
-{
+public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener {
     // BL:
     private Client client;
     private Index index;
@@ -90,8 +89,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     // Lifecycle
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
 
@@ -132,8 +130,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_search, menu);
 
         // Configure search view.
@@ -148,8 +145,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
     // Actions
 
-    private void search()
-    {
+    private void search() {
         final int currentSearchSeqNo = ++lastSearchedSeqNo;
         query.setQuery(searchView.getQuery().toString());
         lastRequestedPage = 0;
@@ -165,14 +161,14 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
                     // requests, nothing prevents the system from opening multiple connections to the
                     // same server, nor the Algolia client to transparently switch to another server
                     // between two requests. Therefore the order of responses is not guaranteed.
-                    if (currentSearchSeqNo <= lastDisplayedSeqNo)
+                    if (currentSearchSeqNo <= lastDisplayedSeqNo) {
                         return;
+                    }
 
                     List<HighlightedResult<Movie>> results = resultsParser.parseResults(content);
                     if (results.isEmpty()) {
                         endReached = true;
-                    }
-                    else {
+                    } else {
                         moviesListAdapter.clear();
                         moviesListAdapter.addAll(results);
                         moviesListAdapter.notifyDataSetChanged();
@@ -187,8 +183,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         });
     }
 
-    private void loadMore()
-    {
+    private void loadMore() {
         Query loadMoreQuery = new Query(query);
         loadMoreQuery.setPage(++lastRequestedPage);
         final int currentSearchSeqNo = lastSearchedSeqNo;
@@ -197,14 +192,14 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
             public void requestCompleted(JSONObject content, AlgoliaException error) {
                 if (content != null && error == null) {
                     // Ignore results if they are for an older query.
-                    if (lastDisplayedSeqNo != currentSearchSeqNo)
+                    if (lastDisplayedSeqNo != currentSearchSeqNo) {
                         return;
+                    }
 
                     List<HighlightedResult<Movie>> results = resultsParser.parseResults(content);
                     if (results.isEmpty()) {
                         endReached = true;
-                    }
-                    else {
+                    } else {
                         moviesListAdapter.addAll(results);
                         moviesListAdapter.notifyDataSetChanged();
                         lastDisplayedPage = lastRequestedPage;
@@ -216,17 +211,14 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
     // Data sources
 
-    private class MovieAdapter extends ArrayAdapter<HighlightedResult<Movie>>
-    {
-        public MovieAdapter(Context context, int resource)
-        {
+    private class MovieAdapter extends ArrayAdapter<HighlightedResult<Movie>> {
+        public MovieAdapter(Context context, int resource) {
             super(context, resource);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            ViewGroup cell = (ViewGroup)convertView;
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewGroup cell = (ViewGroup) convertView;
             if (cell == null) {
                 cell = (ViewGroup) getLayoutInflater().inflate(R.layout.cell_movie, null);
             }
@@ -245,7 +237,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         }
 
         @Override
-        public  void addAll(Collection<? extends HighlightedResult<Movie>> items) {
+        public void addAll(Collection<? extends HighlightedResult<Movie>> items) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 super.addAll(items);
             } else {
@@ -259,8 +251,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     // SearchView.OnQueryTextListener
 
     @Override
-    public boolean onQueryTextSubmit(String query)
-    {
+    public boolean onQueryTextSubmit(String query) {
         // Nothing to do: the search has already been performed by `onQueryTextChange()`.
         // We do try to close the keyboard, though.
         searchView.clearFocus();
@@ -268,8 +259,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     }
 
     @Override
-    public boolean onQueryTextChange(String newText)
-    {
+    public boolean onQueryTextChange(String newText) {
         search();
         return true;
     }
@@ -277,25 +267,26 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
     // AbsListView.OnScrollListener
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState)
-    {
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
         // Nothing to do.
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-    {
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         // Abort if list is empty or the end has already been reached.
-        if (totalItemCount == 0 || endReached)
+        if (totalItemCount == 0 || endReached) {
             return;
+        }
 
         // Ignore if a new page has already been requested.
-        if (lastRequestedPage > lastDisplayedPage)
+        if (lastRequestedPage > lastDisplayedPage) {
             return;
+        }
 
         // Load more if we are sufficiently close to the end of the list.
         int firstInvisibleItem = firstVisibleItem + visibleItemCount;
-        if (firstInvisibleItem + LOAD_MORE_THRESHOLD >= totalItemCount)
+        if (firstInvisibleItem + LOAD_MORE_THRESHOLD >= totalItemCount) {
             loadMore();
+        }
     }
 }
