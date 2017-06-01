@@ -27,10 +27,10 @@ public class ResultsListView extends ListView implements AlgoliaWidget {
         setAdapter(adapter = new MovieAdapter(context, R.layout.cell_movie));
     }
 
-    @Override public void setSearcher(@NonNull Searcher searcher) {
+    @Override public void initWithSearcher(@NonNull Searcher searcher) {
     }
 
-    @Override public void onResults(SearchResults results, boolean isLoadingMore) {
+    @Override public void onResults(@NonNull SearchResults results, boolean isLoadingMore) {
         if (!isLoadingMore) {
             List<HighlightedResult<Movie>> resultList = resultsParser.parseResults(results.content);
             adapter.clear();

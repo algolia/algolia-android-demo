@@ -28,8 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.widget.AbsListView;
 
-import com.algolia.instantsearch.InstantSearchHelper;
-import com.algolia.instantsearch.Searcher;
+import com.algolia.instantsearch.helpers.Searcher;
+import com.algolia.instantsearch.ui.InstantSearch;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.Query;
 
@@ -44,7 +44,7 @@ public class MovieSearchActivity extends AppCompatActivity implements AbsListVie
     private static final int HITS_PER_PAGE = 20;
 
     private Searcher searcher;
-    private InstantSearchHelper helper;
+    private InstantSearch helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class MovieSearchActivity extends AppCompatActivity implements AbsListVie
         // Init Algolia.
         Client client = new Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
         searcher = new Searcher(client.initIndex("movies"));
-        helper = new InstantSearchHelper(moviesListView, searcher);
+        helper = new InstantSearch(moviesListView, searcher);
 
         // Pre-build query.
         searcher.setQuery(new Query().setAttributesToRetrieve("title", "image", "rating", "year")
