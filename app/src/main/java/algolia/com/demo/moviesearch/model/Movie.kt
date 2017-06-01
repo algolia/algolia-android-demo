@@ -21,25 +21,9 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.model;
+package algolia.com.demo.moviesearch.model
 
 /**
- * The highlighted value of an attribute.
+ * A movie object from the data model.
  */
-public class Highlight {
-    private String attributeName;
-    private String highlightedValue;
-
-    public Highlight(String attributeName, String highlightedValue) {
-        this.attributeName = attributeName;
-        this.highlightedValue = highlightedValue;
-    }
-
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public String getHighlightedValue() {
-        return highlightedValue;
-    }
-}
+class Movie(val title: String, val image: String, val rating: Int, val year: Int)

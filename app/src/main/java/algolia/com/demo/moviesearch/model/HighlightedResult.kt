@@ -21,34 +21,24 @@
  * THE SOFTWARE.
  */
 
-package algolia.com.demo.moviesearch.io;
+package algolia.com.demo.moviesearch.model
 
-import org.json.JSONObject;
-
-import algolia.com.demo.moviesearch.model.Movie;
+import java.util.HashMap
 
 /**
- * Parses `Movie` instances from their JSON representation.
- */
-public class MovieJsonParser {
-    /**
-     * Parse a single movie record.
-     *
-     * @param jsonObject JSON object.
-     * @return Parsed movie, or null if error.
-     */
-    public Movie parse(JSONObject jsonObject) {
-        if (jsonObject == null) {
-            return null;
-        }
+ * An highlighted results holds a data model object along with any number of highlights for this
+ * object's attributes.
 
-        String title = jsonObject.optString("title");
-        String image = jsonObject.optString("image");
-        int rating = jsonObject.optInt("rating", -1);
-        int year = jsonObject.optInt("year", 0);
-        if (title != null && image != null && rating >= 0 && year != 0) {
-            return new Movie(title, image, rating, year);
-        }
-        return null;
+ * @param <T> The data model type.
+</T> */
+class HighlightedResult<T>(val result: T) {
+    private val highlights = HashMap<String, Highlight>()
+
+    fun getHighlight(attributeName: String): Highlight? {
+        return highlights[attributeName]
+    }
+
+    fun addHighlight(attributeName: String, highlight: Highlight) {
+        highlights.put(attributeName, highlight)
     }
 }
