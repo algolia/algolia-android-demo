@@ -38,7 +38,8 @@ class HighlightedResult<T>(val result: T) {
         return highlights[attributeName]
     }
 
-    fun addHighlight(attributeName: String, highlight: Highlight) {
+    fun addHighlight(attributeName: String, highlight: Highlight): HighlightedResult<T> {
         highlights[attributeName] = highlight
+        return this
     }
 }

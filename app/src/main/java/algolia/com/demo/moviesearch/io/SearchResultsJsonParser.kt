@@ -26,6 +26,7 @@ package algolia.com.demo.moviesearch.io
 import algolia.com.demo.moviesearch.model.Highlight
 import algolia.com.demo.moviesearch.model.HighlightedResult
 import algolia.com.demo.moviesearch.model.Movie
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 
@@ -34,6 +35,10 @@ import java.util.*
  */
 class SearchResultsJsonParser {
     private val movieParser = MovieJsonParser()
+
+    operator fun JSONArray.iterator():
+            Iterator<JSONObject> = (0 until length()).asSequence()
+            .map { get(it) as JSONObject }.iterator()
 
     /**
      * Parse the root result JSON object into a list of results.
@@ -46,18 +51,20 @@ class SearchResultsJsonParser {
         if (jsonObject == null) return null
 
         val results = ArrayList<HighlightedResult<Movie>>()
-        val hits = jsonObject.optJSONArray("hits") ?: return null
+        val hits = jsonObject.optJSONArray("hits")
 
-        for (i in 0 until hits.length()) {
-            val hit = hits.optJSONObject(i) ?: continue
-            val movie = movieParser.parse(hit) ?: continue
-            val highlightResult = hit.optJSONObject("_highlightResult") ?: continue
-            val highlightTitle = highlightResult.optJSONObject("title") ?: continue
-            val value = highlightTitle.optString("value") ?: continue
+        for (hit in hits) {
+            val value = hit.optJSONObject("_highlightResult")?.
+                    optJSONObject("title")?.
+                    optString("value")
 
-            val result = HighlightedResult(movie)
-            result.addHighlight("title", Highlight("title", value))
-            results.add(result)
+            value?.let {
+                val parsed = movieParser.parse(hit)
+                parsed?.let {
+                    results.add(HighlightedResult(parsed)
+                            .addHighlight("title", Highlight("title", value)))
+                }
+            }
         }
         return results
     }
