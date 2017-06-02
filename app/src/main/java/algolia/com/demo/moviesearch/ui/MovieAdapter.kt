@@ -65,11 +65,13 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
     override fun addAll(items: Collection<HighlightedResult<Movie>>?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             super.addAll(items)
-        } else if (items?.isNotEmpty()?:false){
-            for (item in items!!) {
-                add(item)
+        } else {
+            items?.isNotEmpty()?.let {
+                for (item in items) {
+                    add(item)
+                }
+                notifyDataSetChanged()
             }
-            notifyDataSetChanged()
         }
     }
 }
