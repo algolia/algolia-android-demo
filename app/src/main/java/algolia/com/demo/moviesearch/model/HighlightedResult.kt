@@ -23,7 +23,7 @@
 
 package algolia.com.demo.moviesearch.model
 
-import java.util.HashMap
+import java.util.*
 
 /**
  * An highlighted results holds a data model object along with any number of highlights for this
@@ -39,6 +39,6 @@ class HighlightedResult<T>(val result: T) {
     }
 
     fun addHighlight(attributeName: String, highlight: Highlight) {
-        highlights.put(attributeName, highlight)
+        highlights[attributeName] = highlight
     }
 }
