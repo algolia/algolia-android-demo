@@ -48,7 +48,7 @@ class SearchResultsJsonParser {
         val results = ArrayList<HighlightedResult<Movie>>()
         val hits = jsonObject.optJSONArray("hits") ?: return null
 
-        for (i in 0..hits.length() - 1) {
+        for (i in 0 until hits.length()) {
             val hit = hits.optJSONObject(i) ?: continue
             val movie = movieParser.parse(hit) ?: continue
             val highlightResult = hit.optJSONObject("_highlightResult") ?: continue
