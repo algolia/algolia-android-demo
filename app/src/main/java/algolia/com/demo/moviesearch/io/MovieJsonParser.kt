@@ -38,17 +38,16 @@ class MovieJsonParser {
      * @return Parsed movie, or null if error.
      */
     fun parse(jsonObject: JSONObject?): Movie? {
-        if (jsonObject == null) {
-            return null
+        var movie: Movie? = null
+        if (jsonObject != null) {
+            val title = jsonObject.optString("title")
+            val image = jsonObject.optString("image")
+            val rating = jsonObject.optInt("rating", -1)
+            val year = jsonObject.optInt("year", 0)
+            if (title != null && image != null && rating >= 0 && year != 0) {
+                movie = Movie(title, image, rating, year)
+            }
         }
-
-        val title = jsonObject.optString("title")
-        val image = jsonObject.optString("image")
-        val rating = jsonObject.optInt("rating", -1)
-        val year = jsonObject.optInt("year", 0)
-        if (title != null && image != null && rating >= 0 && year != 0) {
-            return Movie(title, image, rating, year)
-        }
-        return null
+        return movie
     }
 }
