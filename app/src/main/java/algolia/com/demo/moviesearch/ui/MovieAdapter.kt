@@ -56,7 +56,7 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
         val result = getItem(position)
 
         imageLoader!!.displayImage(result!!.result.image, posterImageView, displayImageOptions)
-        titleTextView.text = highlightRenderer.renderHighlights(result["title"]?.highlightedValue.toString())
+        titleTextView.text = highlightRenderer.renderHighlights(result["title"]?.highlightedValue)
         yearTextView.text = String.format("%d", result.result.year)
 
         return cell

@@ -23,43 +23,42 @@
 
 package algolia.com.demo.moviesearch.ui
 
+import algolia.com.demo.moviesearch.R
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
-
-import java.util.regex.Matcher
 import java.util.regex.Pattern
-
-import algolia.com.demo.moviesearch.R
 
 /**
  * Renders HTML-like attributed strings into `Spannable` instances suitable for display.
  */
 class HighlightRenderer(private val context: Context) {
 
-    fun renderHighlights(markupString: String): Spannable {
+    fun renderHighlights(markupString: String?): Spannable {
         val result = SpannableStringBuilder()
-        val matcher = HIGHLIGHT_PATTERN.matcher(markupString)
-        var p = 0 // current position in input string
-        var q = 0 // current position in output string
-        // For each highlight...
-        while (matcher.find()) {
-            // Append text before.
-            result.append(markupString.substring(p, matcher.start()))
-            q += matcher.start() - p
-            p = matcher.start()
+        if (markupString != null) {
+            val matcher = HIGHLIGHT_PATTERN.matcher(markupString)
+            var p = 0 // current position in input string
+            var q = 0 // current position in output string
+            // For each highlight...
+            while (matcher.find()) {
+                // Append text before.
+                result.append(markupString.substring(p, matcher.start()))
+                q += matcher.start() - p
+                p = matcher.start()
 
-            // Append highlighted text.
-            val highlightString = matcher.group(1)
-            result.append(highlightString)
-            result.setSpan(BackgroundColorSpan(context.resources.getColor(R.color.colorAccent)), q, q + highlightString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            q += highlightString.length
-            p = matcher.end()
+                // Append highlighted text.
+                val highlightString = matcher.group(1)
+                result.append(highlightString)
+                result.setSpan(BackgroundColorSpan(context.resources.getColor(R.color.colorAccent)), q, q + highlightString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                q += highlightString.length
+                p = matcher.end()
+            }
+            // Append text after.
+            result.append(markupString.substring(p))
         }
-        // Append text after.
-        result.append(markupString.substring(p))
         return result
     }
 
