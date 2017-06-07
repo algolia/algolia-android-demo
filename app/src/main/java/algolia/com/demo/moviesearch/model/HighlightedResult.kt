@@ -34,12 +34,12 @@ import java.util.*
 class HighlightedResult<T>(val result: T) {
     private val highlights = HashMap<String, Highlight>()
 
-    fun getHighlight(attributeName: String): Highlight? {
-        return highlights[attributeName]
-    }
-
     fun addHighlight(attributeName: String, highlight: Highlight): HighlightedResult<T> {
         highlights[attributeName] = highlight
         return this
+    }
+
+    operator fun get(attribute: String): Highlight? {
+        return highlights[attribute]
     }
 }
