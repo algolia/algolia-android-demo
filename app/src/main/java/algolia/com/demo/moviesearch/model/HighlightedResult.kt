@@ -39,7 +39,5 @@ class HighlightedResult<T>(val result: T) {
         return this
     }
 
-    operator fun get(attribute: String): Highlight? {
-        return highlights[attribute]
-    }
+    operator fun get(attribute: String): Highlight? = highlights[attribute]
 }
