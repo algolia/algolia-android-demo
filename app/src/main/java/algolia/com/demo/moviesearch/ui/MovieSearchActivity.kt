@@ -32,11 +32,9 @@ import com.algolia.instantsearch.helpers.Searcher
 import com.algolia.instantsearch.ui.InstantSearch
 import com.algolia.search.saas.Client
 import com.algolia.search.saas.Query
+import kotlinx.android.synthetic.main.activity_movie_search.*
 
 class MovieSearchActivity : AppCompatActivity(), AbsListView.OnScrollListener {
-    // UI:
-    private var moviesListView: ResultsListView? = null
-
     private var searcher: Searcher? = null
     private var helper: InstantSearch? = null
 
@@ -45,13 +43,13 @@ class MovieSearchActivity : AppCompatActivity(), AbsListView.OnScrollListener {
         setContentView(R.layout.activity_movie_search)
 
         // Bind UI components.
-        moviesListView = findViewById(R.id.listview_movies) as ResultsListView
-        moviesListView!!.setOnScrollListener(this)
+        val moviesListView = this.listview_movies!!
+        moviesListView.setOnScrollListener(this)
 
         // Init Algolia.
         val client = Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb")
         searcher = Searcher(client.initIndex("movies"))
-        helper = InstantSearch(moviesListView!!, searcher!!)
+        helper = InstantSearch(moviesListView, searcher!!)
 
         // Pre-build query.
         searcher!!.query = Query().setAttributesToRetrieve("title", "image", "rating", "year")
