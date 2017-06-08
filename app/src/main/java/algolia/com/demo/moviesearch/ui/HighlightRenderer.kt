@@ -38,7 +38,7 @@ class HighlightRenderer(private val context: Context) {
 
     fun renderHighlights(markupString: String?): Spannable {
         val result = SpannableStringBuilder()
-        if (markupString != null) {
+        markupString?.let {
             val matcher = HIGHLIGHT_PATTERN.matcher(markupString)
             var p = 0 // current position in input string
             var q = 0 // current position in output string

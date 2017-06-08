@@ -39,7 +39,7 @@ class MovieJsonParser {
      */
     fun parse(jsonObject: JSONObject?): Movie? {
         var movie: Movie? = null
-        if (jsonObject != null) {
+        jsonObject?.let {
             val title = jsonObject.optString("title")
             val image = jsonObject.optString("image")
             val rating = jsonObject.optInt("rating", -1)
