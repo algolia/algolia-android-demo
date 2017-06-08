@@ -48,7 +48,7 @@ class SearchResultsJsonParser {
      * @return A list of results (potentially empty), or null in case of error.
      */
     fun parseResults(jsonObject: JSONObject?): List<HighlightedResult<Movie>>? {
-        if (jsonObject == null) return null
+        jsonObject ?: return null
 
         val results = ArrayList<HighlightedResult<Movie>>()
         val hits = jsonObject.optJSONArray("hits")
