@@ -19,7 +19,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<HighlightedResult<Movie>>(context, resource) {
 
     private val highlightRenderer: HighlightRenderer
-    private var imageLoader: ImageLoader? = null
+    private val imageLoader: ImageLoader = ImageLoader.getInstance()
     private val displayImageOptions: DisplayImageOptions = DisplayImageOptions.Builder()
             .cacheOnDisk(true)
             .resetViewBeforeLoading(true)
@@ -30,13 +30,12 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
 
         // Configure Universal Image Loader.
         Thread(Runnable {
-            imageLoader = ImageLoader.getInstance()
-            if (!imageLoader!!.isInited) {
+            if (!imageLoader.isInited) {
                 val configuration = ImageLoaderConfiguration.Builder(context)
                         .memoryCacheSize(2 * 1024 * 1024)
                         .memoryCacheSizePercentage(13) // default
                         .build()
-                imageLoader!!.init(configuration)
+                imageLoader.init(configuration)
             }
         }).start()
 
@@ -55,7 +54,7 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
 
         val result = getItem(position)
 
-        imageLoader!!.displayImage(result!!.result.image, posterImageView, displayImageOptions)
+        imageLoader.displayImage(result!!.result.image, posterImageView, displayImageOptions)
         titleTextView.text = highlightRenderer.renderHighlights(result["title"]?.highlightedValue)
         yearTextView.text = String.format("%d", result.result.year)
 
