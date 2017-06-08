@@ -43,12 +43,9 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var cell = convertView
-        if (cell == null) {
-            cell = LayoutInflater.from(context).inflate(R.layout.cell_movie, parent, false)
-        }
+        var cell : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_movie, parent, false)
 
-        val posterImageView = cell!!.findViewById(R.id.imageview_poster) as ImageView
+        val posterImageView = cell.findViewById(R.id.imageview_poster) as ImageView
         val titleTextView = cell.findViewById(R.id.textview_title) as TextView
         val yearTextView = cell.findViewById(R.id.textview_year) as TextView
 
