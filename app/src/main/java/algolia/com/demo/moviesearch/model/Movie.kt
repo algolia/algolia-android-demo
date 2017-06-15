@@ -26,4 +26,4 @@ package algolia.com.demo.moviesearch.model
 /**
  * A movie object from the data model.
  */
-class Movie(val title: String, val image: String, val rating: Int, val year: Int)
+data class Movie(val title: String, val image: String, val rating: Int, val year: Int)
