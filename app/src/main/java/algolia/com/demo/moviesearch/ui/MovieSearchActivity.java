@@ -100,7 +100,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
         // Init Algolia.
         client = new Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb");
-        index = client.initIndex("movies");
+        index = client.getIndex("movies");
 
         // Pre-build query.
         query = new Query();
