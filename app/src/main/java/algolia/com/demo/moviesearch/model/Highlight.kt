@@ -26,4 +26,4 @@ package algolia.com.demo.moviesearch.model
 /**
  * The highlighted value of an attribute.
  */
-class Highlight(val attributeName: String, val highlightedValue: String)
+data class Highlight(val attributeName: String, val highlightedValue: String)
