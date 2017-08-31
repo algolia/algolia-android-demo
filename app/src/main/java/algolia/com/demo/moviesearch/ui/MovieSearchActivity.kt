@@ -28,8 +28,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.AbsListView
+import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
-import com.algolia.instantsearch.ui.InstantSearch
 import com.algolia.search.saas.Client
 import com.algolia.search.saas.Query
 import kotlinx.android.synthetic.main.activity_movie_search.*
@@ -48,7 +48,7 @@ class MovieSearchActivity : AppCompatActivity(), AbsListView.OnScrollListener {
 
         // Init Algolia.
         val client = Client("latency", "dce4286c2833e8cf4b7b1f2d3fa1dbcb")
-        searcher = Searcher(client.initIndex("movies"))
+        searcher = Searcher.create(client.initIndex("movies"))
         helper = InstantSearch(moviesListView, searcher!!)
 
         // Pre-build query.
@@ -72,7 +72,7 @@ class MovieSearchActivity : AppCompatActivity(), AbsListView.OnScrollListener {
 
     override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
         // Abort if list is empty or the end has already been reached.
-        if (totalItemCount == 0 || !searcher!!.shouldLoadMore()) {
+        if (totalItemCount == 0 || !searcher!!.hasMoreHits()) {
             return
         }
 
