@@ -26,13 +26,17 @@ package algolia.com.demo.moviesearch.ui
 import algolia.com.demo.moviesearch.R
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.widget.AbsListView
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
+import com.algolia.search.saas.AlgoliaException
 import com.algolia.search.saas.Client
+import com.algolia.search.saas.CompletionHandler
 import com.algolia.search.saas.Query
 import kotlinx.android.synthetic.main.activity_movie_search.*
+import org.json.JSONObject
 
 class MovieSearchActivity : AppCompatActivity(), AbsListView.OnScrollListener {
     private var searcher: Searcher? = null

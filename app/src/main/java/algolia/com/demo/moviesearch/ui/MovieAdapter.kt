@@ -27,7 +27,6 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
             .build()
 
     init {
-
         // Configure Universal Image Loader.
         Thread(Runnable {
             if (!imageLoader.isInited) {
@@ -38,36 +37,20 @@ internal class MovieAdapter(context: Context, resource: Int) : ArrayAdapter<High
                 imageLoader.init(configuration)
             }
         }).start()
-
         highlightRenderer = HighlightRenderer(context)
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var cell : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_movie, parent, false)
-
-        val posterImageView = cell.findViewById(R.id.imageview_poster) as ImageView
-        val titleTextView = cell.findViewById(R.id.textview_title) as TextView
-        val yearTextView = cell.findViewById(R.id.textview_year) as TextView
+        val cell : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_movie, parent, false)
+        val posterImageView = cell.findViewById<ImageView>(R.id.imageview_poster)
+        val titleTextView = cell.findViewById<TextView>(R.id.textview_title)
+        val yearTextView = cell.findViewById<TextView>(R.id.textview_year)
 
         val result = getItem(position)
-
         imageLoader.displayImage(result!!.result.image, posterImageView, displayImageOptions)
         titleTextView.text = highlightRenderer.renderHighlights(result["title"]?.highlightedValue)
         yearTextView.text = String.format("%d", result.result.year)
 
         return cell
-    }
-
-    override fun addAll(items: Collection<HighlightedResult<Movie>>?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            super.addAll(items)
-        } else {
-            items?.isNotEmpty()?.let {
-                for (item in items) {
-                    add(item)
-                }
-                notifyDataSetChanged()
-            }
-        }
     }
 }
