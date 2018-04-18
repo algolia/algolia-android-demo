@@ -1,1 +1,3 @@
 include ':app'
+include ":client"
+project(":client").projectDir = new File(settingsDir, "../algoliasearch-client-android/algoliasearch")

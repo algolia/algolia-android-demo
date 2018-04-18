@@ -83,7 +83,9 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
     private static final int HITS_PER_PAGE = 20;
 
-    /** Number of items before the end of the list past which we start loading more content. */
+    /**
+     * Number of items before the end of the list past which we start loading more content.
+     */
     private static final int LOAD_MORE_THRESHOLD = 5;
 
     // Lifecycle
