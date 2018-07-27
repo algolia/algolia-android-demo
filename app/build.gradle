@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "algolia.com.demo.moviesearch"
-        minSdkVersion 11
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -20,8 +20,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.algolia:instantsearch-android:1.0.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    //noinspection GradleDynamicVersion for demo, using latest >> build reproducibility
+    implementation 'com.algolia:instantsearch-android:1.+'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
