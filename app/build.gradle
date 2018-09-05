@@ -26,8 +26,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:27.1.1'
-    compile 'com.algolia:algoliasearch-offline-android:3.4.0'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation('com.algolia:algoliasearch-offline-android:3.26.0') {
+        exclude module: 'support-v4'
+    }
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

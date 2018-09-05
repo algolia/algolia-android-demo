@@ -1,0 +1,7 @@
+{
+  "attributesToIndex": [
+    "name",
+    "description",
+    "category"
+  ]
+}
