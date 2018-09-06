@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -47,11 +48,13 @@ import com.algolia.demo.moviesearch.io.SearchResultsJsonParser;
 import com.algolia.demo.moviesearch.model.HighlightedResult;
 import com.algolia.demo.moviesearch.model.Movie;
 import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.BuildListener;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.MirroredIndex;
 import com.algolia.search.saas.OfflineClient;
 import com.algolia.search.saas.OfflineIndex;
 import com.algolia.search.saas.Query;
+import com.algolia.search.saas.SyncListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -69,7 +72,7 @@ import java.util.UUID;
 
 public class MovieSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener {
     // BL:
-    private MirroredIndex index;
+//    private MirroredIndex index;
     private Query query;
     private SearchResultsJsonParser resultsParser = new SearchResultsJsonParser();
     private int lastSearchedSeqNo;
@@ -126,10 +129,9 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
 
-        Log.e("PLN", "License:" + getResources().getString(R.string.ALGOLIA_OFFLINE_SDK_LICENSE_KEY));
 
-        OfflineClient client = new OfflineClient(this, "latency", getResources().getString(R.string.ALGOLIA_API_KEY));
-        client.enableOfflineMode(getResources().getString(R.string.ALGOLIA_OFFLINE_SDK_LICENSE_KEY));
+//        OfflineClient client = new OfflineClient(this, "latency", getResources().getString(R.string.ALGOLIA_API_KEY));
+//        client.enableOfflineMode(getResources().getString(R.string.ALGOLIA_OFFLINE_SDK_LICENSE_KEY));
 
 //        Log.e("Files", "Before");
 //        try {
@@ -153,14 +155,16 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 //        {
 //            Log.d("Files", "FileName:" + files[i].getName());
 //        }
-        createIndex(client, 100, 0);
+//        createIndex(client, 100, 0);
 
-        Log.e("PLN", "Done.");
+
 //        // Init Algolia.
 //        index = AlgoliaManager.getInstance(this).getMoviesIndex();
 //
 //        // Launch a sync if needed.
 //        AlgoliaSyncService.syncIfNeededAndPossible(this);
+
+        testMirrorIndex();
 
         // Bind UI components.
         moviesListView = (ListView) findViewById(R.id.listview_movies);
@@ -169,14 +173,83 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
 
         // Pre-build query.
         query = new Query();
-        query.setAttributesToRetrieve("title", "image", "rating", "year");
-        query.setAttributesToHighlight("title");
+        query.setAttributesToRetrieve("name");
+        query.setAttributesToHighlight("name");
         query.setHitsPerPage(HITS_PER_PAGE);
 
         // Configure Universal Image Loader.
         imageLoader = ImageLoaderManager.getInstance(this).getImageLoader();
         displayImageOptions = ImageLoaderManager.getInstance(this).getDisplayImageOptions();
         highlightRenderer = new HighlightRenderer(this);
+
+
+    }
+
+
+    public void sync() {
+        Query query = new Query();
+        String customerID = "17046c83-77cb-4d08-b925-ebbf7e6679ee";
+        query.setFilters("customer.uuid:'"+customerID+"'");
+        index.addDataSelectionQuery(new MirroredIndex.DataSelectionQuery(query , Integer.MAX_VALUE));
+        index.addSyncListener(new SyncListener() {
+            @Override
+            public void syncDidStart(MirroredIndex mirroredIndex) {
+                Log.e("Gabe", "Sync started");
+            }
+
+            @Override
+            public void syncDidFinish(MirroredIndex mirroredIndex, Throwable throwable, MirroredIndex.SyncStats syncStats) {
+                Log.e("Gabe", "Sync finished ");
+                if(throwable != null) {
+                    throwable.printStackTrace();
+                }
+            }
+        });
+        index.addBuildListener(new BuildListener() {
+            @Override
+            public void buildDidStart(@NonNull MirroredIndex mirroredIndex) {
+                Log.e("Gabe", "Build started");
+
+            }
+
+            @Override
+            public void buildDidFinish(@NonNull MirroredIndex mirroredIndex, @Nullable Throwable throwable) {
+                Log.e("Gabe", "build finished ");
+                if(throwable != null) {
+                    throwable.printStackTrace();
+                }
+                index.searchAsync(new Query(), new CompletionHandler() {
+                    @Override
+                    public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
+                        Log.e("Gabe", jsonObject.toString());
+                        Log.e("Gabe", e == null ? "" : e.getLocalizedMessage());
+                    }
+                });
+            }
+        });
+        Log.e("Gabe", "Start syncing");
+        index.sync();
+    }
+
+    OfflineClient client;
+    MirroredIndex index;
+
+    public void testMirrorIndex() {
+
+        client = new OfflineClient(this, "8WL048D9A0", "REPLACE THIS WITH THE API KEY");
+        client.enableOfflineMode(getResources().getString(R.string.ALGOLIA_OFFLINE_SDK_LICENSE_KEY));
+
+        index = client.getIndex("kyle-prices.dev_DutchValleyFoods_pricing");
+        index.setMirrored(true);
+
+//        index.searchAsync(new Query(), new CompletionHandler() {
+//            @Override
+//            public void requestCompleted(JSONObject jsonObject, AlgoliaException e) {
+//                Log.e("WTF", jsonObject.toString());
+//                Log.e("WTF", e == null ? "" : e.getLocalizedMessage());
+//            }
+//        });
+        sync();
     }
 //
 //    private class Task extends AsyncTask<Context, Void, Void> {

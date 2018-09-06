@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.algolia.demo.moviesearch"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -28,7 +28,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation('com.algolia:algoliasearch-offline-android:3.26.0') {
+    implementation('com.algolia:algoliasearch-offline-android:3.26.1') {
         exclude module: 'support-v4'
     }
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'

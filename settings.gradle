@@ -1,5 +1,5 @@
 include ':app'
 include ':algoliasearch-offline-android'
-project(':algoliasearch-offline-android').projectDir = new File('/home/pln/Work/APIClients/algoliasearch-client-android/algoliasearch')
+project(':algoliasearch-offline-android').projectDir = new File('~/Dev/algoliasearch-client-android/algoliasearch')
 include ':algoliasearchofflinecore'
 project(':algoliasearchofflinecore').projectDir = new File('/home/pln/Work/AlgoliaSaaS/algolia/sdk/bridge/android/algoliasearchofflinecore')
