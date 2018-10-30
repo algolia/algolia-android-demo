@@ -1,6 +1,6 @@
 # Android instant search demo
 
-This is a sample project implementing an instant-search view with [Algolia](https://www.algolia.com/).
+This is a sample Kotlin project implementing an instant-search view with [Algolia](https://www.algolia.com/).
 Algolia is a Search API that provides hosted full-text, numerical and faceted search.
 
 
