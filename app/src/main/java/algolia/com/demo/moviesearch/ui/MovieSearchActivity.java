@@ -141,6 +141,7 @@ public class MovieSearchActivity extends AppCompatActivity implements SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
+        search();
 
         return true;
     }
